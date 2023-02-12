@@ -1,6 +1,5 @@
 package com.gildedrose;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -55,17 +54,15 @@ class GildedRoseTest {
         verifySingleItemUpdate(AGED_BRIE, 0, 3, -1, 5);
     }
 
-    // TODO check with Allison if increasing quality twice is expected behaviour or a bug.
-    @Test
+    @Test // TODO check with Allison. This is not specified in the requirements. Ok as it is?
     void aged_brie_after_sellin_date_quality_increases_twice() {
         verifySingleItemUpdate(AGED_BRIE, -1, 3, -2, 5);
     }
 
-
+    @Test
     void age_brie_with_quality_50_does_not_increase() {
         verifySingleItemUpdate(AGED_BRIE, -1, 50, -2,50);
     }
-
 
     @Test
     void sulfuras_before_sellin_date_does_not_alter() {
@@ -87,10 +84,12 @@ class GildedRoseTest {
     void backstagepass_with_sellin_10_increases_qualtiy_double() {
         verifySingleItemUpdate(BACKSTAGE_PASS, 10, 36,  9,38);
     }
+
     @Test
     void backstagepass_with_sellin_less_then_10_increases_quality_double() {
         verifySingleItemUpdate(BACKSTAGE_PASS, 8, 20,7,22);
     }
+
     @Test
     void backstagepass_with_sellin_5_increases_quality_triple() {
         verifySingleItemUpdate(BACKSTAGE_PASS, 5, 10, 4, 13);
@@ -127,17 +126,17 @@ class GildedRoseTest {
 
         Throwable exception = assertThrows(IllegalArgumentException.class, () -> inn.updateQuality());
     }
+
     @Test
     void item_with_negative_quality_throws_exception() {
         Item item = new Item(ELIXIR, 5, -2);
 
         GildedRose inn = new GildedRose(new Item[] {item});
 
-        Throwable exception = assertThrows(IllegalArgumentException.class, () -> inn.updateQuality());
+        assertThrows(IllegalArgumentException.class, () -> inn.updateQuality());
     }
 
     @Test
-    @Disabled
     void item_with_null_name_throws_exception() {
         Item item = new Item(null, 5, 5);
 
@@ -177,7 +176,6 @@ class GildedRoseTest {
 
         assertThat("Item sellIn incorrect", item.sellIn, is(expectedItemSellIn));
         assertThat("Item quality incorrect", item.quality, is(expectedItemQuality));
-
     }
 
 }
