@@ -69,7 +69,6 @@ class GildedRoseTest {
         verifySingleItemUpdate(SULFURAS, 1, 80,1,80);
     }
 
-    // test necessary?
     @Test
     void sulfuras_after_sellin_date_does_not_alter() {
         verifySingleItemUpdate(SULFURAS, -1, 80, -1, 80);
