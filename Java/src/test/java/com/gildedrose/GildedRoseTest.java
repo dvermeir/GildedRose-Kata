@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GildedRoseTest {
 
@@ -24,6 +24,12 @@ class GildedRoseTest {
     void item_with_quality_0_sellin_value_decreases_quality_remains() {
         verifySingleItemUpdate(ELIXIR, 0, 0, -1,0);
     }
+
+    @Test
+    void item_at_sellin_date_quality_degrades_twice_and_sellin_decreases() {
+        verifySingleItemUpdate(ELIXIR, 0, 4, -1,2);
+    }
+
     @Test
     void item_after_sellin_date_quality_degrades_twice_and_sellin_decreases() {
         verifySingleItemUpdate(ELIXIR, -1, 4, -2,2);
@@ -39,10 +45,14 @@ class GildedRoseTest {
         verifySingleItemUpdate(ELIXIR, -1, 0, -2, 0);
     }
 
-
     @Test
     void aged_brie_before_sellin_date_quality_increases() {
         verifySingleItemUpdate(AGED_BRIE, 2, 3, 1, 4);
+    }
+
+    @Test
+    void aged_brie_at_sellin_date_quality_increases_twice() {
+        verifySingleItemUpdate(AGED_BRIE, 0, 3, -1, 5);
     }
 
     // TODO check with Allison if increasing quality twice is expected behaviour or a bug.
@@ -51,10 +61,11 @@ class GildedRoseTest {
         verifySingleItemUpdate(AGED_BRIE, -1, 3, -2, 5);
     }
 
-    @Test
-    void item_with_quality_50_does_not_increase() {
+
+    void age_brie_with_quality_50_does_not_increase() {
         verifySingleItemUpdate(AGED_BRIE, -1, 50, -2,50);
     }
+
 
     @Test
     void sulfuras_before_sellin_date_does_not_alter() {
@@ -73,16 +84,12 @@ class GildedRoseTest {
     }
 
     @Test
-    @Disabled
     void backstagepass_with_sellin_10_increases_qualtiy_double() {
         verifySingleItemUpdate(BACKSTAGE_PASS, 10, 36,  9,38);
-        fail();
     }
     @Test
-    @Disabled
     void backstagepass_with_sellin_less_then_10_increases_quality_double() {
         verifySingleItemUpdate(BACKSTAGE_PASS, 8, 20,7,22);
-        fail();
     }
     @Test
     void backstagepass_with_sellin_5_increases_quality_triple() {
@@ -95,15 +102,48 @@ class GildedRoseTest {
     }
 
     @Test
-    @Disabled
+    void backstagepass_at_sellin_decreaeses_quality_to_zero() {
+        verifySingleItemUpdate(BACKSTAGE_PASS, 0, 11, -1, 0);
+    }
+
+    @Test
+    void backstagepass_after_sellin_decreases_quality_to_zero() {
+        verifySingleItemUpdate(BACKSTAGE_PASS, -1, 11, -2, 0);
+    }
+
+    @Test
     void conjured_item_before_sellin_date_degrades_double() {
         verifySingleItemUpdate(CONJURED, 2,3,1,1);
     }
 
     @Test
-    @Disabled
     void conjured_item_after_sellin_date_degrades_4times() {
         verifySingleItemUpdate(CONJURED, -1,8,-2,4);
+    }
+
+    @Test
+    void null_item_throws_exception() {
+        GildedRose inn = new GildedRose(new Item[] {null});
+
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> inn.updateQuality());
+    }
+    @Test
+    void item_with_negative_quality_throws_exception() {
+        Item item = new Item(ELIXIR, 5, -2);
+
+        GildedRose inn = new GildedRose(new Item[] {item});
+
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> inn.updateQuality());
+    }
+
+    @Test
+    @Disabled
+    void item_with_null_name_throws_exception() {
+        Item item = new Item(null, 5, 5);
+
+        GildedRose inn = new GildedRose(new Item[] {item});
+
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> inn.updateQuality());
     }
 
     @Test
