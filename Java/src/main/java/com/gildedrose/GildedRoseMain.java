@@ -1,6 +1,6 @@
 package com.gildedrose;
 
-public class GildedRoseApp {
+public class GildedRoseMain {
     public static void main(String[] args) {
         System.out.println("OMGHAI!");
 
